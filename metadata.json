@@ -1,0 +1,8 @@
+{
+  "name": "Copy of  뭐심지? (MwoSimji?)",
+  "description": "이번 달에 심기 좋은 꽃 TOP 10을 추천해주는 스마트 가드닝 가이드",
+  "requestFramePermissions": [],
+  "majorCapabilities": [
+    "MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"
+  ]
+}
