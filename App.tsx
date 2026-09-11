@@ -58,12 +58,24 @@ const App: React.FC = () => {
 
     try {
       const data = await getFlowerRecommendations(formattedQuery);
-      setFlowers(data);
-      setView('RESULTS');
+      if (Array.isArray(data) && data.length > 0) {
+        setFlowers(data);
+        setView('RESULTS');
+      } else {
+        const { getCuratedFlowers } = await import('./data/curatedFlowers');
+        setFlowers(getCuratedFlowers(formattedQuery));
+        setView('RESULTS');
+      }
     } catch (err) {
-      console.error(err);
-      setError("죄송합니다. 꽃 정보를 불러오는데 실패했습니다. 잠시 후 다시 시도해주세요.");
-      setView('ERROR');
+      console.warn("Recovering from unexpected error with curated dataset:", err);
+      try {
+        const { getCuratedFlowers } = await import('./data/curatedFlowers');
+        setFlowers(getCuratedFlowers(formattedQuery));
+        setView('RESULTS');
+      } catch {
+        setError("죄송합니다. 꽃 정보를 불러오는데 실패했습니다. 잠시 후 다시 시도해주세요.");
+        setView('ERROR');
+      }
     }
   };
 

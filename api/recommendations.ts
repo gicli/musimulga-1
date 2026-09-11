@@ -1,4 +1,5 @@
 import { fetchFlowerRecommendations } from "../services/recommendationCore";
+import { getCuratedFlowers } from "../data/curatedFlowers";
 
 export default async function handler(req: any, res: any) {
   // CORS setup
@@ -14,9 +15,9 @@ export default async function handler(req: any, res: any) {
     return res.status(200).end();
   }
 
-  try {
-    let query: string | undefined;
+  let query: string | undefined;
 
+  try {
     if (req.method === "POST") {
       let body = req.body;
       if (typeof body === "string") {
@@ -36,7 +37,8 @@ export default async function handler(req: any, res: any) {
     const data = await fetchFlowerRecommendations(query);
     return res.status(200).json(data);
   } catch (error: any) {
-    console.error("Vercel API error:", error);
-    return res.status(500).json({ error: error?.message || "Internal server error" });
+    console.warn("Vercel API exception encountered. Gracefully providing curated fallback:", error?.message);
+    const fallback = getCuratedFlowers(query);
+    return res.status(200).json(fallback);
   }
 }
